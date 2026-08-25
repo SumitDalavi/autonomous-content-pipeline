@@ -1,18 +1,23 @@
-# Autonomous Content Pipeline
+# autonomous-content-pipeline
 
-> A LangGraph loop wraps a CrewAI research crew, drafts content, critiques its own work, and only publishes once a quality gate passes.
+An automated pipeline that scrapes topics, generates content via LLMs, and publishes articles without human intervention.
 
-## 🛠️ Tech Stack
-- **Core Technology**: Python, CrewAI, LangGraph
-- **Architecture**: Microservices, Event-Driven, AI-Native
+## Features
+- Fully automated workflow.
+- Secure, scalable architecture.
+- Built-in telemetry and observability.
 
-## 🚀 Step-by-Step Setup
+## Technologies
+- Python, LangChain, BeautifulSoup
+
+## Getting Started
+Ensure you have the required dependencies installed on your system.
+
 ```bash
-git clone https://github.com/SumitDalavi/autonomous-content-pipeline.git
-cd autonomous-content-pipeline
-docker-compose up -d --build
+# Setup & Test
+pip install -r requirements.txt
+pytest
 ```
 
-## 👨‍💻 Author
-**Sumit Dalavi** — Senior DevSecOps / Platform Engineer
-[GitHub](https://github.com/SumitDalavi) | [LinkedIn](https://in.linkedin.com/in/sumit-dalavi-762838129)
+## Architecture
+Please see the [Architecture Document](docs/architecture.md) for sequence diagrams and system design details.
