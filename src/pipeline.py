@@ -1,49 +1,106 @@
+"""
+Autonomous Content Pipeline
+===========================
+Self-correcting loop: Research → Write → Critique → [Revise if needed] → Publish.
+Only publishes when quality score meets the configured threshold.
+"""
+from __future__ import annotations
 import os
-import json
-from datetime import datetime
+from dataclasses import dataclass
+from typing import Optional
 
-class ContentPipeline:
-    def __init__(self, topic):
-        self.topic = topic
-        self.output_dir = "output"
-        os.makedirs(self.output_dir, exist_ok=True)
+from src.agents.researcher import run_researcher, ResearchResult
+from src.agents.writer import run_writer, Draft
+from src.agents.critic import run_critic, CritiqueResult
+from src.agents.publisher import run_publisher, PublishResult
 
-    def fetch_data(self):
-        """Simulate fetching data for the topic."""
-        return [
-            {"source": "mock_api_1", "content": f"Information about {self.topic}"},
-            {"source": "mock_api_2", "content": f"More details on {self.topic}"}
-        ]
 
-    def generate_content(self, data):
-        """Simulate LLM generating content based on fetched data."""
-        # In a real app, this would call OpenAI/Anthropic API
-        content = f"# Generated Article: {self.topic.title()}\n\n"
-        for item in data:
-            content += f"- Derived from {item['source']}: {item['content']}\n"
-        content += "\nConclusion: AI content generation is efficient."
-        return content
+@dataclass
+class PipelineResult:
+    topic: str
+    draft: Optional[Draft] = None
+    critique: Optional[CritiqueResult] = None
+    publish: Optional[PublishResult] = None
+    iterations: int = 0
+    success: bool = False
+    reason: str = ""
 
-    def save_output(self, content):
-        """Save the generated content to a markdown file."""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"{self.topic.replace(' ', '_')}_{timestamp}.md"
-        filepath = os.path.join(self.output_dir, filename)
-        
-        with open(filepath, 'w', encoding='utf-8') as f:
-            f.write(content)
-        
-        return filepath
 
-    def run(self):
-        """Execute the full pipeline."""
-        print(f"Starting pipeline for topic: {self.topic}")
-        data = self.fetch_data()
-        content = self.generate_content(data)
-        filepath = self.save_output(content)
-        print(f"Pipeline complete. Output saved to {filepath}")
-        return filepath
+def run_pipeline(
+    topic: str,
+    max_iterations: int = 3,
+    quality_threshold: float = None,
+    output_dir: str = None,
+) -> PipelineResult:
+    """
+    Execute the full autonomous content pipeline for a given topic.
 
-if __name__ == "__main__":
-    pipeline = ContentPipeline("AI advancements in 2026")
-    pipeline.run()
+    Args:
+        topic: The subject to research and write about.
+        max_iterations: Max write → critique cycles before giving up.
+        quality_threshold: Score (0.0-1.0) required to publish. Reads from
+                           env QUALITY_THRESHOLD if not specified.
+        output_dir: Where to save published articles.
+
+    Returns:
+        PipelineResult with the full execution history.
+    """
+    if quality_threshold is None:
+        quality_threshold = float(os.getenv("QUALITY_THRESHOLD", "0.80"))
+    if output_dir is None:
+        output_dir = os.getenv("OUTPUT_DIR", "output")
+
+    result = PipelineResult(topic=topic)
+
+    print(f"\n{'='*60}")
+    print(f"Pipeline starting for topic: {topic!r}")
+    print(f"Quality threshold: {quality_threshold:.0%} | Max iterations: {max_iterations}")
+    print(f"{'='*60}\n")
+
+    # ── Step 1: Research ──────────────────────────────────────────────────────
+    research: ResearchResult = run_researcher(topic)
+
+    # ── Step 2–3: Write → Critique loop ──────────────────────────────────────
+    draft: Optional[Draft] = None
+    critique: Optional[CritiqueResult] = None
+
+    for i in range(1, max_iterations + 1):
+        result.iterations = i
+        print(f"\n[pipeline] Iteration {i}/{max_iterations}")
+
+        draft = run_writer(research)
+        result.draft = draft
+
+        critique = run_critic(draft, threshold=quality_threshold)
+        result.critique = critique
+
+        if critique.passes:
+            print(f"[pipeline] Quality gate PASSED on iteration {i} (score={critique.score:.2f})")
+            break
+
+        print(f"[pipeline] Quality gate FAILED (score={critique.score:.2f}). Revising...")
+        # Inject critic feedback into the research summary so the next
+        # write iteration addresses the specific gaps.
+        feedback_text = "; ".join(critique.feedback)
+        research.summary += f" [REVISION NOTES: {feedback_text}]"
+
+    # ── Step 4: Publish if quality gate passed ────────────────────────────────
+    if critique and critique.passes and draft:
+        publish = run_publisher(draft, output_dir)
+        result.publish = publish
+        result.success = True
+        result.reason = f"Published after {result.iterations} iteration(s)"
+    else:
+        result.success = False
+        result.reason = (
+            f"Quality threshold ({quality_threshold:.0%}) not met after "
+            f"{max_iterations} iterations (final score: {critique.score:.2f})"
+            if critique else "No critique produced"
+        )
+        print(f"[pipeline] ABORTED: {result.reason}")
+
+    print(f"\n{'='*60}")
+    print(f"Pipeline finished | Success: {result.success}")
+    print(f"Reason: {result.reason}")
+    print(f"{'='*60}\n")
+    return result
