@@ -1,4 +1,5 @@
 # autonomous-content-pipeline Architecture
+> Maturity: Functional Prototype
 
 ## System Diagram
 The following Mermaid.js sequence diagram maps the core workflow and interactions within the system:
