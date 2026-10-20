@@ -4,11 +4,12 @@ import os
 from dataclasses import dataclass
 
 from src.agents.researcher import ResearchResult
+from src.credential_mode import is_live_openai_key
 
 try:
     from openai import OpenAI
-    _client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
-    _LLM_AVAILABLE = bool(os.getenv("OPENAI_API_KEY"))
+    _client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", "") or "sk-dummy")
+    _LLM_AVAILABLE = is_live_openai_key()
 except Exception:
     _LLM_AVAILABLE = False
 

@@ -50,9 +50,15 @@ async def run(req: PipelineRequest):
     )
 
 
+from src.credential_mode import detect_mode
+
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "1.0.0"}
+    return {
+        "status": "ok",
+        "version": "1.0.0",
+        "mode": detect_mode()
+    }
 
 
 if __name__ == "__main__":
