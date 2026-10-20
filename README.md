@@ -1,5 +1,3 @@
-> **NOTE:** This repository is an archival lab or partial prototype. It is not actively maintained and should not be used as a reference for production-grade deployments or performance benchmarks.
-
 # autonomous-content-pipeline
 
 [![CI Pipeline](https://github.com/SumitDalavi/autonomous-content-pipeline/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/SumitDalavi/autonomous-content-pipeline/actions/workflows/ci.yml)
@@ -46,10 +44,10 @@ Each release automatically:
 ### Verifying the Release
 ```bash
 # Verify release via GitHub CLI
-gh release view v0.1.0 --repo SumitDalavi/autonomous-content-pipeline
+gh release view v0.2.0 --repo SumitDalavi/autonomous-content-pipeline
 
 # Download and inspect SBOM
-gh release download v0.1.0 --repo SumitDalavi/autonomous-content-pipeline --pattern "sbom.spdx.json"
+gh release download v0.2.0 --repo SumitDalavi/autonomous-content-pipeline --pattern "sbom.spdx.json"
 cat sbom.spdx.json | jq .
 ```
 
@@ -78,9 +76,15 @@ Enterprise deployment with production-grade backends, security scans, and contai
 - **Production Orchestration:** Mount secrets via Kubernetes Secrets or cloud secret managers with atomic config reload support.
 - **Release Verification:** Checksums and SPDX SBOM available on [GitHub Releases](https://github.com/SumitDalavi/autonomous-content-pipeline/releases).
 
-## Documentation
+## 📚 Documentation
 
-- [Architecture](docs/ARCHITECTURE.md)
-- [Runbook](docs/runbook.md)
-- [Decisions](docs/decisions.md)
-- [Changelog](docs/changelog.md)
+- [Architecture](docs/ARCHITECTURE.md) — System diagram and component details
+- [Runbook](docs/runbook.md) — Setup, commands, and expected outputs
+- [Decisions](docs/decisions.md) — ADRs for autonomous content pipeline architecture
+- [Changelog](docs/changelog.md) — Change history
+
+## 👨‍💻 Author
+
+**Sumit Dalavi** — Senior DevSecOps / Platform Engineer
+[GitHub](https://github.com/SumitDalavi) | [LinkedIn](https://in.linkedin.com/in/sumit-dalavi-762838129)
+
