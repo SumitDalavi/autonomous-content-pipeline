@@ -1,14 +1,14 @@
 > **NOTE:** This repository is an archival lab or partial prototype. It is not actively maintained and should not be used as a reference for production-grade deployments or performance benchmarks.
 
-
 # autonomous-content-pipeline
 
-[![Release](https://img.shields.io/github/v/release/SumitDalavi/autonomous-content-pipeline?color=blue&logo=github)](https://github.com/SumitDalavi/autonomous-content-pipeline/releases)
+[![CI Pipeline](https://github.com/SumitDalavi/autonomous-content-pipeline/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/SumitDalavi/autonomous-content-pipeline/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/SumitDalavi/autonomous-content-pipeline?color=0969da&label=release&logo=github)](https://github.com/SumitDalavi/autonomous-content-pipeline/releases)
 [![Release Workflow](https://github.com/SumitDalavi/autonomous-content-pipeline/actions/workflows/release.yml/badge.svg)](https://github.com/SumitDalavi/autonomous-content-pipeline/actions/workflows/release.yml)
-[![SBOM](https://img.shields.io/badge/SBOM-SPDX%20JSON-blueviolet?logo=spdx)](https://github.com/SumitDalavi/autonomous-content-pipeline/releases)
-
-[![Release](https://img.shields.io/github/v/release/SumitDalavi/autonomous-content-pipeline?color=blue&logo=github)](https://github.com/SumitDalavi/autonomous-content-pipeline/releases)
-[![SBOM](https://img.shields.io/badge/SBOM-SPDX%20JSON-blueviolet?logo=spdx)](https://github.com/SumitDalavi/autonomous-content-pipeline/releases)
+[![GHCR Container](https://img.shields.io/badge/ghcr.io-v0.2.0-blue?logo=docker&logoColor=white)](https://github.com/SumitDalavi/autonomous-content-pipeline/pkgs/container/autonomous-content-pipeline)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org)
+[![SBOM](https://img.shields.io/badge/SBOM-SPDX%202.3-blueviolet?logo=spdx)](https://github.com/SumitDalavi/autonomous-content-pipeline/releases/tag/v0.2.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 An automated pipeline that scrapes topics, generates content via LLMs, and publishes articles without human intervention.
 
